@@ -14,10 +14,10 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ─── Planet definitions ────────────────────────────────────────────────────
 const PLANETS = [
-  { id: 'about',    label: 'About',    short: '01', orbit: 120, size: 24, speed: 0.30,  incl:  0.10, axis: 0.4, color: 0x8d877b, ring: false },
-  { id: 'quotes',   label: 'Words',    short: '02', orbit: 190, size: 19, speed: 0.22,  incl: -0.16, axis: 1.9, color: 0x9c968a, ring: false },
-  { id: 'projects', label: 'Workshop', short: '03', orbit: 272, size: 36, speed: 0.145, incl:  0.20, axis: 3.0, color: 0x7d776b, ring: true  },
-  { id: 'contact',  label: 'Signal',   short: '04', orbit: 350, size: 22, speed: 0.10,  incl: -0.07, axis: 4.6, color: 0x8f897c, ring: false },
+  { id: 'about',    label: 'About',    short: '01', orbit: 120, size: 24, speed: 0.30,  incl:  0.10, axis: 0.4, color: 0xa8a298, ring: false },
+  { id: 'quotes',   label: 'Words',    short: '02', orbit: 190, size: 19, speed: 0.22,  incl: -0.16, axis: 1.9, color: 0xb2aca0, ring: false },
+  { id: 'projects', label: 'Workshop', short: '03', orbit: 272, size: 36, speed: 0.145, incl:  0.20, axis: 3.0, color: 0x9a9488, ring: true  },
+  { id: 'contact',  label: 'Signal',   short: '04', orbit: 350, size: 22, speed: 0.10,  incl: -0.07, axis: 4.6, color: 0xaca69a, ring: false },
 ];
 
 // ─── Texture helpers ───────────────────────────────────────────────────────
@@ -66,7 +66,8 @@ function ringTexture() {
 }
 
 // ─── Geometry helpers ──────────────────────────────────────────────────────
-const GRAD = toonGradient(['#3a3833', '#6f695d', '#9a9488', '#cfc8b8']);
+// Gradient từ graphite trung bình đến sáng — tránh mặt tối ngấm đen
+const GRAD = toonGradient(['#7a7468', '#9a9488', '#b8b2a6', '#d4cfc6']);
 const DOT  = dotTexture();
 
 function celSphere(radius, colorHex, seg = 40) {
@@ -139,9 +140,9 @@ export function createOrrery() {
   controls.target.set(0, 0, 0);
 
   // Lights
-  const dir = new THREE.DirectionalLight(0xffffff, 1.5);
+  const dir = new THREE.DirectionalLight(0xffffff, 1.2);
   dir.position.set(1, 1.3, 0.7);
-  scene.add(dir, new THREE.AmbientLight(0xffffff, 0.55));
+  scene.add(dir, new THREE.AmbientLight(0xffffff, 1.1));
 
   // ── Sun ──
   const sun = celSphere(44, 0xcbc4b4, 48);
@@ -252,7 +253,7 @@ export function createOrrery() {
 
   // ── UFO ──
   const ufo     = new THREE.Group();
-  const ufoBody = celSphere(18, 0x9b9488, 36); ufoBody.scale.set(1, 0.34, 1); ufo.add(ufoBody);
+  const ufoBody = celSphere(18, 0xb4aea2, 36); ufoBody.scale.set(1, 0.34, 1); ufo.add(ufoBody);
   const dome    = celSphere(10, 0xc4bdad, 28); dome.scale.set(1, 0.8, 1); dome.position.y = 5.5; ufo.add(dome);
 
   const baseRing = new THREE.Mesh(
