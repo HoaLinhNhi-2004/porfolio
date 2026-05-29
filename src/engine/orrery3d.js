@@ -217,7 +217,7 @@ export function createOrrery() {
       const lab = document.createElement('button');
       lab.className = 'p3d-label';
       lab.dataset.id = p.id;
-      lab.innerHTML = `<span class="nm">${p.label}</span><span class="no">PLANET ${p.short}</span>`;
+      lab.innerHTML = `<span class="nm">${p.label}</span>`;
       lab.addEventListener('click', e => { e.stopPropagation(); planetClickCb?.(p.id); });
       labelsBox.appendChild(lab);
       planetObjs[p.id].lab = lab;
@@ -451,6 +451,12 @@ export function createOrrery() {
   // ── DOM label projection ──
   function updateLabel(id) {
     const o = planetObjs[id];
+    // Hide all labels while panel is open — they'd overlap the planet preview canvas
+    if (document.body.classList.contains('panel-open')) {
+      o.lab.style.opacity = 0;
+      o.lab.style.pointerEvents = 'none';
+      return;
+    }
     o.holder.getWorldPosition(tmp);
     tmp.y -= o.def.size + 6;
     const v      = tmp.clone().project(camera);
