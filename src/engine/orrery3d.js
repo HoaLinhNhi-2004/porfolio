@@ -288,9 +288,11 @@ export function createOrrery() {
     pivot.add(holder);
 
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: guestbookStarTexture(), transparent: true, opacity: 0.9, depthWrite: false,
+      map: guestbookStarTexture(), transparent: true, opacity: 0.9,
+      depthWrite: false, depthTest: false,
     }));
-    sprite.scale.setScalar(22);
+    sprite.scale.setScalar(38);
+    sprite.renderOrder = 10;
     holder.add(sprite);
 
     // Invisible sphere for raycasting
@@ -679,9 +681,9 @@ export function createOrrery() {
         Math.cos(starState.a) * STAR_ORBIT.orbit, 0,
         Math.sin(starState.a) * STAR_ORBIT.orbit
       );
-      const pulse = 0.60 + Math.sin(now * 0.0048) * 0.40;
+      const pulse = 0.70 + Math.sin(now * 0.0048) * 0.30;
       starState.sprite.material.opacity = pulse;
-      starState.sprite.scale.setScalar(20 + Math.sin(now * 0.0031 + 1.2) * 6);
+      starState.sprite.scale.setScalar(34 + Math.sin(now * 0.0031 + 1.2) * 8);
     }
 
     // Sun ray sprite slowly rotates
