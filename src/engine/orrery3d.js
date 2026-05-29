@@ -66,14 +66,17 @@ function ringTexture() {
 }
 
 // ─── Geometry helpers ──────────────────────────────────────────────────────
-// Gradient từ graphite trung bình đến sáng — tránh mặt tối ngấm đen
+// Gradient graphite cho hành tinh — từ trung đến sáng, tránh mặt tối ngấm đen
 const GRAD = toonGradient(['#7a7468', '#9a9488', '#b8b2a6', '#d4cfc6']);
+// Gradient vàng nắng riêng cho mặt trời
+const SUN_GRAD = toonGradient(['#9a7010', '#c49020', '#ddb040', '#f2d060']);
 const DOT  = dotTexture();
 
-function celSphere(radius, colorHex, seg = 40) {
+// grad là optional — mặt trời dùng SUN_GRAD, hành tinh dùng GRAD mặc định
+function celSphere(radius, colorHex, seg = 40, grad = GRAD) {
   const g   = new THREE.Group();
   const geo = new THREE.SphereGeometry(radius, seg, Math.round(seg * 0.8));
-  const mesh = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color: colorHex, gradientMap: GRAD }));
+  const mesh = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color: colorHex, gradientMap: grad }));
   const out  = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide }));
   out.scale.setScalar(1.05);
   g.add(out); g.add(mesh);
@@ -144,8 +147,8 @@ export function createOrrery() {
   dir.position.set(1, 1.3, 0.7);
   scene.add(dir, new THREE.AmbientLight(0xffffff, 1.1));
 
-  // ── Sun ──
-  const sun = celSphere(44, 0xcbc4b4, 48);
+  // ── Sun — vàng nắng ấm với gradient riêng ──
+  const sun = celSphere(44, 0xd4a020, 48, SUN_GRAD);
   scene.add(sun);
   const sunSpot = new THREE.Mesh(
     new THREE.CircleGeometry(7, 24),
@@ -234,6 +237,81 @@ export function createOrrery() {
       sizeAttenuation: true, depthWrite: false,
     }));
     scene.add(starPoints);
+  }
+
+  // ── Asteroids & space debris ──
+  const asteroidGroups = [];
+
+  function buildAsteroids() {
+    // Dọn cũ nếu rebuild
+    asteroidGroups.forEach(g => scene.remove(g));
+    asteroidGroups.length = 0;
+
+    // Vật liệu dùng chung — graphite đậm hơn hành tinh
+    const matFill    = new THREE.MeshToonMaterial({ color: 0x948e84, gradientMap: GRAD });
+    const matOutline = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+
+    // Hàm tạo 1 khối đá góc cạnh
+    function makeRock(size) {
+      const type = Math.floor(rand(0, 3));
+      const geo  = type === 0 ? new THREE.OctahedronGeometry(size, 0)
+                 : type === 1 ? new THREE.DodecahedronGeometry(size, 0)
+                 :              new THREE.TetrahedronGeometry(size, 0);
+      const g = new THREE.Group();
+      const outline = new THREE.Mesh(geo, matOutline.clone());
+      outline.scale.setScalar(1.1);
+      g.add(outline);
+      g.add(new THREE.Mesh(geo, matFill.clone()));
+      // vặn xoay ngẫu nhiên để trông tự nhiên
+      g.rotation.set(rand(0, Math.PI * 2), rand(0, Math.PI * 2), rand(0, Math.PI * 2));
+      g.userData.rotSpeed = new THREE.Vector3(
+        rand(-0.12, 0.12), rand(-0.18, 0.18), rand(-0.08, 0.08)
+      );
+      return g;
+    }
+
+    // ① Vành đai chính — giữa Workshop (272) và Signal (350)
+    const beltCount = Math.round(55 * state.density);
+    for (let i = 0; i < beltCount; i++) {
+      const a = rand(0, Math.PI * 2);
+      const r = rand(300, 342);
+      const h = rand(-18, 18);
+      const rock = makeRock(rand(1.8, 4.8));
+      rock.position.set(Math.cos(a) * r, h, Math.sin(a) * r);
+      scene.add(rock);
+      asteroidGroups.push(rock);
+    }
+
+    // ② Vụn đá nhỏ rải rác — khắp không gian, kích thước nhỏ hơn
+    const debrisCount = Math.round(28 * state.density);
+    for (let i = 0; i < debrisCount; i++) {
+      const a = rand(0, Math.PI * 2);
+      const r = rand(90, 620);
+      const h = rand(-80, 80);
+      const rock = makeRock(rand(0.8, 2.2));
+      rock.position.set(Math.cos(a) * r, h, Math.sin(a) * r);
+      scene.add(rock);
+      asteroidGroups.push(rock);
+    }
+
+    // ③ Bụi điểm sáng trong vành đai — dùng Points như sao nhưng nhỏ và dày hơn
+    const dustN   = Math.round(200 * state.density);
+    const dustPos = new Float32Array(dustN * 3);
+    for (let i = 0; i < dustN; i++) {
+      const a = rand(0, Math.PI * 2);
+      const r = rand(285, 358);
+      dustPos[i*3]   = Math.cos(a) * r;
+      dustPos[i*3+1] = rand(-12, 12);
+      dustPos[i*3+2] = Math.sin(a) * r;
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
+      color: 0x8a8478, size: 2.2, map: DOT,
+      transparent: true, opacity: 0.55, sizeAttenuation: true, depthWrite: false,
+    }));
+    scene.add(dust);
+    asteroidGroups.push(dust);   // track để dọn khi rebuild
   }
 
   // ── Meteors ──
@@ -374,6 +452,17 @@ export function createOrrery() {
     // Sun ray sprite slowly rotates
     rays.material.rotation += dt * 0.05;
 
+    // Asteroids & debris tumble slowly
+    if (!reduce) {
+      asteroidGroups.forEach(g => {
+        if (g.userData.rotSpeed) {
+          g.rotation.x += g.userData.rotSpeed.x * dt;
+          g.rotation.y += g.userData.rotSpeed.y * dt;
+          g.rotation.z += g.userData.rotSpeed.z * dt;
+        }
+      });
+    }
+
     // UFO orbits the sun after onboarding
     if (state.ufoState === 'orbit' && !reduce) {
       state.ufoAng += 0.5 * state.speedMult * dt;
@@ -425,6 +514,7 @@ export function createOrrery() {
     init() {
       buildPlanets();
       buildStars();
+      buildAsteroids();
       requestAnimationFrame(loop);
     },
 
@@ -469,6 +559,6 @@ export function createOrrery() {
     },
 
     setPlanetSpeed(m) { state.speedMult = m; },
-    setDensity(m)     { state.density = m; buildStars(); },
+    setDensity(m)     { state.density = m; buildStars(); buildAsteroids(); },
   };
 }
