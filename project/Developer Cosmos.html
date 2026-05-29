@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Developer Cosmos — Hoa Linh Nhi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="cosmos.css" />
+<link rel="stylesheet" href="cosmos-ui.css" />
+</head>
+<body>
+
+<!-- ===== Background ===== -->
+<canvas id="cosmos-canvas"></canvas>
+<div id="vortex"><div class="disk"></div><div class="core"></div></div>
+
+<!-- ===== Fixed HUD chrome ===== -->
+<div class="hud hud-corners">
+  <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+</div>
+
+<div class="hud topbar">
+  <a class="brand" href="#hero" style="text-decoration:none;color:inherit">
+    <span class="mark"></span>
+    <span style="display:flex;flex-direction:column;gap:3px">
+      <b>HOA&nbsp;LINH&nbsp;NHI</b>
+      <small>Fullstack · XR Developer</small>
+    </span>
+  </a>
+  <div class="sys"><span class="dot"></span> All systems nominal</div>
+</div>
+
+<nav class="hud navrail" id="navrail">
+  <a href="#hero"    data-sec="hero"><span class="num">01</span><span>Launch</span><span class="tick"></span></a>
+  <a href="#about"   data-sec="about"><span class="num">02</span><span>Station</span><span class="tick"></span></a>
+  <a href="#systems" data-sec="systems"><span class="num">03</span><span>Systems</span><span class="tick"></span></a>
+  <a href="#contact" data-sec="contact"><span class="num">04</span><span>Horizon</span><span class="tick"></span></a>
+</nav>
+
+<div class="hud telemetry">
+  <div class="grp">
+    <span><b>SECTOR</b> <span class="val" id="t-sector">01 · LAUNCH BAY</span></span>
+  </div>
+  <div class="grp">
+    <span><b>VEL</b> <span class="val" id="t-vel">0.40c</span></span>
+    <span><b>COORD</b> <span class="val" id="t-coord">X00 · Y00</span></span>
+  </div>
+</div>
+<div class="progressbar"><i id="progress"></i></div>
+
+<!-- ===== Scene ===== -->
+<main id="scene">
+
+  <!-- 01 — HERO -->
+  <section class="section" id="hero" data-screen-label="01 Hero">
+    <div class="wrap">
+      <span class="eyebrow reveal">Developer Cosmos · v2026</span>
+      <h1 class="reveal d1">BUILDING<br /><span class="glow">WORLDS</span> IN CODE</h1>
+      <p class="sub reveal d2">Fullstack &amp; XR developer charting systems across the web, virtual reality, and the physical world of connected devices.</p>
+      <div class="roledock reveal d3">
+        <span>React / Next.js</span><span>Unity · XR/VR</span><span>IoT · ESP32 / PLC</span>
+      </div>
+      <div class="cta-row reveal d4">
+        <a href="#about" class="btn" id="cta-begin">Begin the journey <span class="arr">→</span></a>
+        <a href="#systems" class="btn ghost">View systems</a>
+      </div>
+    </div>
+    <div class="scrollcue"><span>Scroll to engage warp</span><span class="line"></span></div>
+  </section>
+
+  <!-- 02 — ABOUT -->
+  <section class="section" id="about" data-screen-label="02 About">
+    <div class="wrap grid">
+      <div class="glass bracketed console reveal">
+        <div class="head"><span>// CREW MANIFEST</span><span class="id" id="about-id">ID&nbsp;//&nbsp;HLN-2004</span></div>
+        <dl class="readout">
+          <dt>Callsign</dt><dd>Hoa Linh Nhi</dd>
+          <dt>Class</dt><dd>Fullstack · XR</dd>
+          <dt>Origin</dt><dd>github / HoaLinhNhi-2004</dd>
+          <dt>Status</dt><dd style="color:var(--accent)">Available for missions</dd>
+        </dl>
+        <div class="bars" id="about-bars">
+          <div class="bar"><div class="lab"><span>Frontend Engineering</span><span>92%</span></div><div class="track"><div class="fill" data-w="92%"></div></div></div>
+          <div class="bar"><div class="lab"><span>XR / VR Simulation</span><span>86%</span></div><div class="track"><div class="fill" data-w="86%"></div></div></div>
+          <div class="bar"><div class="lab"><span>Backend &amp; Databases</span><span>88%</span></div><div class="track"><div class="fill" data-w="88%"></div></div></div>
+          <div class="bar"><div class="lab"><span>IoT / Embedded</span><span>78%</span></div><div class="track"><div class="fill" data-w="78%"></div></div></div>
+        </div>
+        <div class="avatar-slot">
+          <div class="ring"><div class="ph">DROP<br />AVATAR</div></div>
+          <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-muted);line-height:1.7">
+            VESSEL ONLINE<br />
+            <span style="color:var(--accent)">7 STARSYSTEMS MAPPED</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-copy">
+        <span class="eyebrow reveal">02 — Space Station</span>
+        <h2 class="reveal d1">A builder at<br />the helm.</h2>
+        <p class="reveal d2">I design and ship end-to-end systems — from pixel-perfect interfaces to the databases and devices behind them. My orbit spans modern web apps, immersive XR experiences, and embedded hardware.</p>
+        <p class="reveal d3">Currently exploring the frontier where reality, the web, and physical computing converge — building tools that feel less like software and more like worlds.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — SYSTEMS (skills + projects, scroll-pinned) -->
+  <section id="systems" data-screen-label="03 Systems">
+    <div class="sticky">
+      <div class="systems-head">
+        <span class="eyebrow">03 — Skill Solar System</span>
+        <h2>EXPLORE THE SYSTEMS</h2>
+      </div>
+      <div class="stage">
+        <!-- orbit visual -->
+        <div class="orbits" id="orbits">
+          <div class="ring r3"></div><div class="ring r2"></div><div class="ring r1"></div>
+          <div class="sun"></div>
+          <div class="planet" id="p0" data-i="0" style="width:54px;height:54px"><div class="body"></div><span class="tag">Web Dev</span></div>
+          <div class="planet" id="p1" data-i="1" style="width:42px;height:42px"><div class="body"></div><span class="tag">XR / VR</span></div>
+          <div class="planet" id="p2" data-i="2" style="width:62px;height:62px"><div class="body"></div><span class="tag">IoT · Backend</span></div>
+        </div>
+        <!-- project card -->
+        <div class="glass bracketed proj">
+          <div class="proj-fade" id="proj">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — CONTACT (event horizon) -->
+  <section class="section" id="contact" data-screen-label="04 Contact">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow reveal">04 — Event Horizon</span>
+        <h2 class="reveal d1">CROSS THE<br />HORIZON</h2>
+        <p class="lead reveal d2">Every signal that enters is answered. Send a transmission and let's build something that bends the rules.</p>
+        <div class="socials reveal d3">
+          <a href="https://github.com/HoaLinhNhi-2004" target="_blank" rel="noopener"><span>GitHub</span><span class="h">HoaLinhNhi-2004 ↗</span></a>
+          <a href="#"><span>LinkedIn</span><span class="h">/in/hoalinhnhi ↗</span></a>
+          <a href="mailto:hoalinhnhi@cosmos.dev"><span>Email</span><span class="h">transmit ↗</span></a>
+        </div>
+      </div>
+
+      <form class="glass bracketed form reveal d2" id="contact-form" novalidate>
+        <div class="field">
+          <label for="f-name">Identify yourself</label>
+          <input id="f-name" name="name" type="text" placeholder="Your name" />
+          <div class="msg" data-for="name"></div>
+        </div>
+        <div class="field">
+          <label for="f-email">Return frequency</label>
+          <input id="f-email" name="email" type="email" placeholder="you@galaxy.com" />
+          <div class="msg" data-for="email"></div>
+        </div>
+        <div class="field">
+          <label for="f-msg">Transmission</label>
+          <textarea id="f-msg" name="message" placeholder="What are we building?"></textarea>
+          <div class="msg" data-for="message"></div>
+        </div>
+        <button type="submit" class="btn" style="width:100%;justify-content:center" id="send-btn">Transmit signal <span class="arr">→</span></button>
+        <p class="sent" id="sent-note" style="display:none;margin-top:16px">✦ Signal transmitted — standby for response.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- Tweaks mount -->
+<div id="tweaks-root"></div>
+
+<!-- ===== Scripts ===== -->
+<script src="starfield.js"></script>
+<script src="cosmos-app.js"></script>
+
+<!-- React + Babel for Tweaks panel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="tweaks.jsx"></script>
+
+</body>
+</html>
