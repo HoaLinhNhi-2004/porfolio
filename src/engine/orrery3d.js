@@ -595,7 +595,7 @@ export function createOrrery() {
     canvas.id = 'planet-preview';
     Object.assign(canvas.style, {
       position: 'fixed', left: '0', top: '0',
-      width: '100vw', height: '100vh',
+      width: '50vw', height: '100vh',
       pointerEvents: 'none',
       zIndex: '5',
       opacity: '0',
@@ -615,8 +615,9 @@ export function createOrrery() {
     pvScene.add(pvDir, new THREE.AmbientLight(0xffffff, 1.1));
 
     function resize() {
-      pvRenderer.setSize(innerWidth, innerHeight);
-      pvCamera.aspect = innerWidth / innerHeight;
+      const w = Math.floor(innerWidth * 0.5);
+      pvRenderer.setSize(w, innerHeight);
+      pvCamera.aspect = w / innerHeight;
       pvCamera.updateProjectionMatrix();
     }
     resize();
@@ -653,8 +654,7 @@ export function createOrrery() {
 
     preview.scene.add(sphere);
     preview.sphere = sphere;
-    // Shift camera left so the sphere sits left-of-center behind the centered panel
-    preview.camera.position.set(-radius * 0.6, 0, radius * 3.8);
+    preview.camera.position.set(0, 0, radius * 3.8);
     preview.camera.lookAt(0, 0, 0);
     preview.resize();
     preview.active = true;

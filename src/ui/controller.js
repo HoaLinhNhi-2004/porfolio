@@ -156,16 +156,19 @@ export function initUI(orrery) {
     sheet.innerHTML = '';
     sheet.appendChild(tpl.content.cloneNode(true));
     sheet.scrollTop = 0;
-    panel.classList.add('open');
     document.body.classList.add('panel-open');
     orrery.highlight(id);
     if (id === 'guestbook') {
+      panel.classList.add('centered');
       orrery.focusGuestbookStar();
       wireGuestbookForm();
     } else {
+      panel.classList.remove('centered');
       orrery.focusPlanet(id);
       orrery.showPlanetPreview(id);
     }
+    // Add 'open' after class setup so transition starts from the right state
+    requestAnimationFrame(() => panel.classList.add('open'));
     if (id === 'contact') wireContactForm();
   }
 
@@ -176,6 +179,11 @@ export function initUI(orrery) {
     orrery.resetZoom();
     orrery.hidePlanetPreview();
   }
+
+  // Remove .centered after close transition so next open starts clean
+  panel.addEventListener('transitionend', () => {
+    if (!panel.classList.contains('open')) panel.classList.remove('centered');
+  });
 
   $('#panel-close').addEventListener('click', closePanel);
   addEventListener('keydown', e => {
